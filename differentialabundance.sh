@@ -1,6 +1,4 @@
 #!/bin/bash
-conda init bash
-conda activate pipelines
 
 usage() {
     echo "Usage: $0 <CASE> <CONTROL> <MATRIX> <GENE_LENGTH> -o <output_dir> -n <project_name> -f <fastq_dir> -g <gtf_file> -w <work_dir> -t <transcript_true>"
