@@ -22,43 +22,24 @@ rnaseq.sh: Run nf-core rnaseq pipeline
       ./run_rnaseq.sh -i /path/to/sample_ids.txt -o /path/to/output_directory
 
 
-gene_differentialabundance.sh: Differential expression of genes starting from salmon counts analysis
+differentialabundance.sh: Differential expression of genes starting from salmon counts analysis
 
     Usage: ./gene_differentialabundance.sh <CASE> <CONTROL> <MATRIX> <GENE_LENGTH> 
     -o <output_dir> -n <project_name> -f <fastq_dir> -g <gtf_file> -w <work_dir>
+    -t <transcript_true>
 
     Required Arguments (Positional):
       1. CASE          - File containig case ids
       2. CONTROL       - File containig control ids
-      3. MATRIX        - Gene count file from rnaseq
-      4. GENE_LENGTH   - Gene length file from rnaseq
+      3. MATRIX        - Gene/Transcript count file from rnaseq
+      4. GENE_LENGTH   - Gene/Transcript length file from rnaseq
 
     Optional Flags:
-      -o    Specify output directory
-      -n    Specify project name
-      -f    Specify the fastq directory
-      -g    Specify the gtf file
-      -w    Specify work directory
-      -h    Display this help message
-
-
-transcript_differentialabundance.sh: Differential expression of transcripts starting from salmon counts analysis
-
-    Usage: ./transcript_differentialabundance.sh <CASE> <CONTROL> <MATRIX> <GENE_LENGTH> 
-    -o <output_dir> -n <project_name> -f <fastq_dir> -g <gtf_file> -w <work_dir>
-
-    Required Arguments (Positional):
-      1. CASE          - File containig case ids
-      2. CONTROL       - File containig control ids
-      3. MATRIX        - Gene count file from rnaseq
-      4. GENE_LENGTH   - Gene length file from rnaseq
-
-    Optional Flags:
-      -o    Specify output directory
-      -n    Specify project name
-      -f    Specify the fastq directory
-      -g    Specify the gtf file
-      -w    Specify work directory
-      -h    Display this help message
-
+      -o OUTDIR          Output directory
+      -n NAME            Project name
+      -f FASTQ_DIR       Fastq directory
+      -g GTF_FILE        GTF file
+      -w WORK_DIR        Work directory
+      -t TRANSCRIPT=true Transcript Differential Abundance
+      -h                 Display this help message
 
