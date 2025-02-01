@@ -9,6 +9,7 @@ rnaseq.sh: Run nf-core rnaseq pipeline
       -r <raw_data_dir>    Set raw FastQ file directory (default: './fastq_files')
       -s <samplesheet>     Provide an existing samplesheet CSV file
       -i <sample_id_file>  Provide a file containing sample IDs to generate the samplesheet
+      -v variant=true      Execute variant calling with gatk
       -h                   Display this help message
 
     Either the -s (samplesheet) or -i (sample_id_file) option must be provided, but not both.

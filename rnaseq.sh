@@ -9,6 +9,7 @@ REFERENCE=GRCh38.111
 GTF=$ENSEMBLE/$REFERENCE/annotations/Homo_sapiens.GRCh38.111.chr.gtf.gz
 GENOME=$ENSEMBLE/$REFERENCE/genomes/Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa.gz
 ALIGNER=star_salmon
+VAR_CALLER=gatk
 STAR_INDEX=$ENSEMBLE/$REFERENCE/indexes
 SALMON_INDEX=$ENSEMBLE/$REFERENCE/indexes/salmon
 
@@ -21,6 +22,7 @@ usage() {
   echo "  -r <raw_data_dir>    Set raw FastQ file directory (default: './fastq_files')"
   echo "  -s <samplesheet>     Provide an existing samplesheet CSV file"
   echo "  -i <sample_id_file>  Provide a file containing sample IDs to generate the samplesheet"
+  echo "  -v variant=true      Boolean flag for variant calling"
   echo "  -h                   Display this help message"
   echo ""
   echo "Either the -s (samplesheet) or -i (sample_id_file) option must be provided, but not both."
@@ -37,12 +39,13 @@ usage() {
 
 
 # Check if arguments are provided
-while getopts "o:r:s:i:h" opt; do
+while getopts "o:r:s:i:vh" opt; do
   case $opt in
     o) OUTPUT_DIR="$OPTARG" ;;
     r) RAW_DATA_DIR="$OPTARG" ;;
     s) SAMPLESHEET="$OPTARG" ;;  # Provided samplesheet file
     i) SAMPLE_ID_FILE="$OPTARG" ;;  # Provided sample_id_file
+    v) VARIANT=true ;;           # Add variant calling
     h) usage ;;  # Display the help message
     *) echo "Invalid option"; exit 1 ;;
   esac
@@ -76,7 +79,7 @@ if [[ -n "$SAMPLE_ID_FILE" ]]; then
   echo "Creating samplesheet for nf-core/rnaseq..."
 
   # Initialize the samplesheet with column headers including strand column (auto by default)
-  echo "sample,fastq_1,fastq_2,strand" > $SAMPLESHEET
+  echo "sample,fastq_1,fastq_2,strandedness" > $SAMPLESHEET
 
   # Loop through each sample and add its FastQ file paths and strandness to the samplesheet
   for SAMPLE in "${SAMPLES[@]}"; do
@@ -103,7 +106,8 @@ fi
 # Run nf-core/rnaseq pipeline
 echo "Starting nf-core/rnaseq pipeline..."
 
-nextflow run nf-core/rnaseq \
+CMD="nextflow run nf-core/rnaseq \
+  -profile $PROFILE \
   --input $SAMPLESHEET \
   --outdir $OUTPUT_DIR/rnaseq \
   --gtf $GTF \
@@ -112,8 +116,13 @@ nextflow run nf-core/rnaseq \
   --save_mapped_reads \
   --skip_markduplicates false \
   --star_index $STAR_INDEX \
-  --salmon_index $SALMON_INDEX \
-  -profile $PROFILE
+  --salmon_index $SALMON_INDEX"
+
+if [ "$VARIANT" = true ]; then
+    CMD+=" --variant_caller $VAR_CALLER "  # Add flag if -v is passed
+fi
+
+$CMD
 
 echo "nf-core/rnaseq pipeline completed."
 
